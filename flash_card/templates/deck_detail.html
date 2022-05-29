@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}list of cards{% endblock %}
+
+{% block content %}
+
+<html>
+  <head>
+    <title></title>
+    <meta content="">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+      $(function() {
+  $("#visible").click(function() {
+      $('#invisible').toggleClass("show");
+    });  
+  });
+    </script>
+    <style>
+      .hide{display:none;}
+      .show{display:block;}
+    </style>
+  </head>
+  <body>
+    <p id="visible">{{item.title}}</p>
+    <p id="invisible" class="hide">See me now!</p>
+  </body>
+</html>
+<!-- ------------------------------------------------------------------- -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.hide {
+  display: none;
+}
+    
+.myDIV:hover + .hide {
+  display: block;
+  color: rgb(0, 81, 255);
+}
+</style>
+</head>
+<body>
+  {% if messages %}
+    {% for message in messages %}
+    <p style="font-size: large;">{{message}}</p>
+    {% endfor %}
+  {% endif %}
+  <div style="float: right; margin-right: 10px; font-size: larger;"><a href="{% url 'flash_card:card-create' pk=object.pk %}">add a new card</a><br><br></div>
+  <h2 style="font-size: 29pt;">{{object.title}}</h2>
+  <div style="font-size: x-large;">{{object.description}}</div><br><br>
+  {% for item in card_list %}
+    {% if item.image %}
+      <div style="width: 20%; height: 20%;"><img style="size: 50px; max-width:100%; max-height:100%;" src="{% static item.get_icon_folder %}" alt="card icon"></div>
+    {% else %}
+      <div style="width: 20%; height: 20%;"><img style="size: 50px; max-width:100%; max-height:100%;" src="{% static 'photos/default_card_image.png' %}" alt="default card icon"></div>
+    {% endif %}
+    <div class="myDIV" style="font-size: xx-large; width: 40%;">{{item.title}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <p style="font-size: medium; float: right;">created at:{{item.created_at}}</p></div>
+    <div class="hide" style="font-size: xx-large;">{{item.answer}}</div>
+    <div>
+      <a href="{% url 'flash_card:card-delete' pk=item.deck.pk id=item.id %}"><input type="button" value="Delete"></a>
+      <a href="{% url 'flash_card:card-update' pk=item.deck.pk id=item.id %}"><input type="button" value="Update"></a>
+    </div>
+    ------------------------------------------------------------------------------------------------------------------------<br>
+  {% endfor %}
+
+</body>
+</html>
+
+{% endblock %}
